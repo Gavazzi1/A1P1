@@ -14,7 +14,8 @@ public:
     hash_code = 0;
     hash();
   }
-  ~String() { delete[] value_; }
+  //~String() { delete[] value_; }
+  ~String() {}
 
   virtual size_t get_size() { return size_; }
 
@@ -28,6 +29,10 @@ public:
     }
     return !strcmp(s->getValue(), value_);
     // return !strcmp(s->value_, value_);
+  }
+
+  virtual bool equals(const char* str) {
+    return strcmp(value_, str) == 0;
   }
 
   String *concat(String *o) {
