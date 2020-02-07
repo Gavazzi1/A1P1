@@ -18,6 +18,8 @@ String *len = new String("-len");
 String *print_col_type = new String("-print_col_type");
 String *print_col_idx = new String("-print_col_idx");
 String *is_missing_idx = new String("-is_missing_idx");
+String *typestr = new String("-type");
+String *patstr = new String("-pattern");
 
 size_t array_contains(String **array, size_t size, String *val) {
   for (size_t i = 0; i < size; i++) {
@@ -43,6 +45,8 @@ void set_keys(Hashmap *hashmap) {
   hashmap->put(print_col_type, nullptr);
   hashmap->put(print_col_idx, nullptr);
   hashmap->put(is_missing_idx, nullptr);
+  hashmap->put(typestr, nullptr);
+  hashmap->put(patstr, nullptr);
 }
 
 void read_command(Hashmap *hashmap, size_t argv, char **argc) {

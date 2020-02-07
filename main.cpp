@@ -37,6 +37,239 @@ void print_without_schema(Object *object) {
   }
 }
 
+int parse_int(String* field) {
+    int len = strlen(field->getValue());
+    char newbuf[len - 1];
+    strcpy(newbuf, field->getValue() + 1);
+    return atoi(newbuf);
+}
+
+float parse_float(String* field) {
+    int len = strlen(field->getValue());
+    char newbuf[len - 1];
+    strcpy(newbuf, field->getValue() + 1);
+    return atof(newbuf);
+}
+
+bool parse_bool(String* field) {
+    int len = strlen(field->getValue());
+    char newbuf[len - 1];
+    strcpy(newbuf, field->getValue() + 1);
+    return strcmp(newbuf, "0") != 0;
+}
+
+void int_row(Hashmap* data) {
+    int base = 0;
+    Integer* zero = new Integer(0);
+    int rows = data->size();
+    int cols = cast_list(data->get(zero))->size();
+    for (int j = 0; j < rows - 1; ++j) {
+        Integer* row = new Integer(j);
+        StrList *list = cast_list(data->get(row));
+
+        for (int i = 0; i < cols; ++i) {
+            Integer* col = new Integer(i);
+
+            String* tmp = cast_string(list->get(col->val_));
+            base = base + parse_int(tmp);
+
+            delete col;
+        }
+
+        delete row;
+    }
+    delete zero;
+}
+
+void int_col(Hashmap* data) {
+    int base = 0;
+    Integer* zero = new Integer(0);
+    int rows = data->size();
+    int cols = cast_list(data->get(zero))->size();
+    for (int i = 0; i < cols; ++i) {
+        Integer* col = new Integer(i);
+
+        for (int j = 0; j < rows - 1; ++j) {
+            Integer* row = new Integer(j);
+
+            StrList *list = cast_list(data->get(row));
+            String* tmp = cast_string(list->get(col->val_));
+            base = base + parse_int(tmp);
+
+            delete row;
+        }
+        delete col;
+    }
+    delete zero;
+}
+
+void float_row(Hashmap* data) {
+    float base = 0;
+    Integer* zero = new Integer(0);
+    int rows = data->size();
+    int cols = cast_list(data->get(zero))->size();
+    for (int j = 0; j < rows - 1; ++j) {
+        Integer* row = new Integer(j);
+        StrList *list = cast_list(data->get(row));
+
+        for (int i = 0; i < cols; ++i) {
+            Integer* col = new Integer(i);
+
+            String* tmp = cast_string(list->get(col->val_));
+            base = base + parse_float(tmp);
+
+            delete col;
+        }
+
+        delete row;
+    }
+    delete zero;
+}
+
+void float_col(Hashmap* data) {
+    float base = 0;
+    Integer* zero = new Integer(0);
+    int rows = data->size();
+    int cols = cast_list(data->get(zero))->size();
+    for (int i = 0; i < cols; ++i) {
+        Integer* col = new Integer(i);
+
+        for (int j = 0; j < rows - 1; ++j) {
+            Integer* row = new Integer(j);
+
+            StrList *list = cast_list(data->get(row));
+            String* tmp = cast_string(list->get(col->val_));
+            base = base + parse_float(tmp);
+
+            delete row;
+        }
+        delete col;
+    }
+    delete zero;
+}
+
+void bool_row(Hashmap* data) {
+    bool base = false;
+    Integer* zero = new Integer(0);
+    int rows = data->size();
+    int cols = cast_list(data->get(zero))->size();
+    for (int j = 0; j < rows - 1; ++j) {
+        Integer* row = new Integer(j);
+        StrList *list = cast_list(data->get(row));
+
+        for (int i = 0; i < cols; ++i) {
+            Integer* col = new Integer(i);
+
+            String* tmp = cast_string(list->get(col->val_));
+            base = base ^ parse_bool(tmp);
+
+            delete col;
+        }
+
+        delete row;
+    }
+    delete zero;
+}
+
+void bool_col(Hashmap* data) {
+    bool base = false;
+    Integer* zero = new Integer(0);
+    int rows = data->size();
+    int cols = cast_list(data->get(zero))->size();
+    for (int i = 0; i < cols; ++i) {
+        Integer* col = new Integer(i);
+
+        for (int j = 0; j < rows - 1; ++j) {
+            Integer* row = new Integer(j);
+
+            StrList *list = cast_list(data->get(row));
+            String* tmp = cast_string(list->get(col->val_));
+            base = base ^ parse_bool(tmp);
+
+            delete row;
+        }
+        delete col;
+    }
+    delete zero;
+}
+
+void string_row(Hashmap* data) {
+    int base = 0;
+    Integer* zero = new Integer(0);
+    int rows = data->size();
+    int cols = cast_list(data->get(zero))->size();
+    for (int j = 0; j < rows - 1; ++j) {
+        Integer* row = new Integer(j);
+        StrList *list = cast_list(data->get(row));
+
+        for (int i = 0; i < cols - 1; ++i) {
+            Integer* col = new Integer(i);
+
+            String* tmp = cast_string(list->get(col->val_));
+            base = base + strlen(tmp->getValue());
+
+            delete col;
+        }
+
+        delete row;
+    }
+    delete zero;
+}
+
+void string_col(Hashmap* data) {
+    int base = 0;
+    Integer* zero = new Integer(0);
+    int rows = data->size();
+    int cols = cast_list(data->get(zero))->size();
+    printf("%d %d\n", rows, cols);
+    for (int i = 0; i < cols - 1; ++i) {
+        Integer* col = new Integer(i);
+
+        for (int j = 0; j < rows - 1; ++j) {
+            Integer* row = new Integer(j);
+
+            StrList *list = cast_list(data->get(row));
+            String* tmp = cast_string(list->get(col->val_));
+            base = base + strlen(tmp->getValue());
+
+            delete row;
+        }
+        delete col;
+    }
+    delete zero;
+}
+
+void benchmark(String* dType, String* pattern, Hashmap* data) {
+    if (dType->equals("int")) {
+        if (pattern->equals("byrow")) {
+            int_row(data);
+        } else if (pattern->equals("bycol")) {
+            int_col(data);
+        }
+    }
+    else if (dType->equals("float")) {
+        if (pattern->equals("byrow")) {
+            float_row(data);
+        } else if (pattern->equals("bycol")) {
+            float_col(data);
+        }
+    }
+    else if (dType->equals("bool")) {
+        if (pattern->equals("byrow")) {
+            bool_row(data);
+        } else if (pattern->equals("bycol")) {
+            bool_col(data);
+        }
+    }
+    else if (dType->equals("string")) {
+        if (pattern->equals("byrow")) {
+            string_row(data);
+        } else if (pattern->equals("bycol")) {
+            string_col(data);
+        }
+    }
+}
+
 int main(int argv, char **argc) {
   if (argv == 1) {
     printf("Usage: %s -key argument\n", argc[0]);
@@ -46,6 +279,19 @@ int main(int argv, char **argc) {
   Hashmap *data_map = new Hashmap();
   read_command(command_map, argv, argc);
   int max_row = read_file(command_map, data_map);
+
+  String* dType = cast_string(command_map->get(typestr));
+  if (dType != nullptr) {
+    String* pattern = cast_string(command_map->get(patstr));
+
+    benchmark(dType, pattern, data_map);
+
+    delete patstr;
+    delete typestr;
+    return 0;
+  }
+
+  delete typestr;
 
   StrList *header_type = get_column_header(max_row, data_map);
   String *print_col_type_idx = cast_string(command_map->get(print_col_type));
